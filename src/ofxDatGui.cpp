@@ -761,13 +761,17 @@ void ofxDatGui::onInternalEventCallback(ofxDatGuiInternalEvent e)
 
 bool ofxDatGui::hitTest(ofPoint pt)
 {
-    if (mMoving){
+    if (mMoving) {
         return true;
-    }   else{
+    }
+    else if (applyNodeScale) {
+        return (pt.x > mGuiBounds.x && pt.x < (mGuiBounds.x + mGuiBounds.width) && pt.y > mGuiBounds.y && pt.y < (mGuiBounds.y + mGuiBounds.height));
+    }
+    else {
         return mGuiBounds.inside(pt);
     }
 }
-
+ 
 void ofxDatGui::moveGui(ofPoint pt)
 {
     mPosition.x = pt.x;
@@ -820,7 +824,8 @@ void ofxDatGui::positionGui()
     }
     // move the footer back to the top of the gui //
     if (!mExpanded) mGuiFooter->setPosition(mPosition.x, mPosition.y);
-    mGuiBounds = ofRectangle(mPosition.x, mPosition.y, mWidth, mHeight);
+    mGuiBounds = ofRectangle(mPosition.x * ofxDatGuiNodeGlobals::getNodeScale(), mPosition.y * ofxDatGuiNodeGlobals::getNodeScale(),
+                             mWidth * ofxDatGuiNodeGlobals::getNodeScale(), mHeight * ofxDatGuiNodeGlobals::getNodeScale());
 }
 
 /* 
@@ -904,6 +909,11 @@ void ofxDatGui::update()
 // empty the trash //
     for (int i=0; i<trash.size(); i++) delete trash[i];
     trash.clear();
+    
+    // Updating mGuiBounds here instead of draw since the nodeScale might change
+    if (applyNodeScale)
+        mGuiBounds = ofRectangle(mPosition.x * ofxDatGuiNodeGlobals::getNodeScale(), mPosition.y * ofxDatGuiNodeGlobals::getNodeScale(),
+                             mWidth * ofxDatGuiNodeGlobals::getNodeScale(), mHeight * ofxDatGuiNodeGlobals::getNodeScale());
 }
 
 void ofxDatGui::draw()
@@ -939,4 +949,78 @@ void ofxDatGui::onWindowResized(ofResizeEventArgs &e)
     if (mAnchor != ofxDatGuiAnchor::NO_ANCHOR) positionGui();
 }
 
+// Custom include for DVideo/Photon
+ofxDatGuiInputNode* ofxDatGui::addInputNode(string label) {
+    ofxDatGuiInputNode* node = new ofxDatGuiInputNode(label);
+    //node->onButtonEvent(this, &ofxDatGui::onButtonEventCallback);
+    node->onInputNodeEvent(this, &ofxDatGui::onInputNodeEventCallback);
+    attachItem(node);
+    return node;
+}
 
+ofxDatGuiOutputNode* ofxDatGui::addOutputNode(string label) {
+    ofxDatGuiOutputNode* node = new ofxDatGuiOutputNode(label);
+    //node->onButtonEvent(this, &ofxDatGui::onButtonEventCallback);
+    node->onOutputNodeEvent(this, &ofxDatGui::onOutputNodeEventCallback);
+    attachItem(node);
+    return node;
+}
+
+// DVideo/Photon input and ouput nodes event
+void ofxDatGui::onInputNodeEventCallback(ofxDatGuiInputNodeEvent e) {
+    if (inputNodeEventCallback != nullptr) {
+        inputNodeEventCallback(e);
+    }
+    else {
+        ofxDatGuiLog::write(ofxDatGuiMsg::INPUT_NODE_NOT_CONNECTED);
+    }
+    
+}
+
+void ofxDatGui::onOutputNodeEventCallback(ofxDatGuiOutputNodeEvent e) {
+    if (outputNodeEventCallback != nullptr) {
+        outputNodeEventCallback(e);
+    }
+    else {
+        ofxDatGuiLog::write(ofxDatGuiMsg::OUTPUT_NODE_NOT_CONNECTED);
+    }
+}
+
+// DVideo/Photon getter
+ofxDatGuiInputNode* ofxDatGui::getInputNode(string label, string folder) {
+    ofxDatGuiInputNode* node = nullptr;
+    
+    if (folder != "") {
+        ofxDatGuiFolder* f = static_cast<ofxDatGuiFolder*>(getComponent(ofxDatGuiType::FOLDER, folder));
+        if (f) node = static_cast<ofxDatGuiInputNode*>(f->getComponent(ofxDatGuiType::INPUT_NODE, label));
+    }
+    else {
+        node = static_cast<ofxDatGuiInputNode*>(getComponent(ofxDatGuiType::INPUT_NODE, label));
+    }
+    
+    if (node == nullptr) {
+        ofxDatGuiLog::write(ofxDatGuiMsg::COMPONENT_NOT_FOUND, folder != "" ? folder + "-" + label : label);
+        return nullptr;
+    }
+    
+    return node;
+}
+
+ofxDatGuiOutputNode* ofxDatGui::getOutputNode(string label, string folder) {
+    ofxDatGuiOutputNode* node = nullptr;
+    
+    if (folder != "") {
+        ofxDatGuiFolder* f = static_cast<ofxDatGuiFolder*>(getComponent(ofxDatGuiType::FOLDER, folder));
+        if (f) node = static_cast<ofxDatGuiOutputNode*>(f->getComponent(ofxDatGuiType::OUTPUT_NODE, label));
+    }
+    else {
+        node = static_cast<ofxDatGuiOutputNode*>(getComponent(ofxDatGuiType::OUTPUT_NODE, label));
+    }
+    
+    if (node == nullptr) {
+        ofxDatGuiLog::write(ofxDatGuiMsg::COMPONENT_NOT_FOUND, folder != "" ? folder + "-" + label : label);
+        return nullptr;
+    }
+    
+    return node;
+}

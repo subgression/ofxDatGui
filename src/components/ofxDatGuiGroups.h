@@ -31,6 +31,8 @@
 #include "ofxDatGuiMatrix.h"
 #include "ofxDatGuiTimeGraph.h"
 #include "ofxDatGuiScrollView.h"
+#include "ofxDatGuiInputNode.h"
+#include "ofxDatGuiOutputNode.h"
 
 class ofxDatGuiGroup : public ofxDatGuiButton {
 

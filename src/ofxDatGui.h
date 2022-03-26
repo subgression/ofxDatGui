@@ -23,6 +23,7 @@
 #pragma once
 #include "ofxDatGuiGroups.h"
 #include "ofxDatGuiControls.h"
+#include "ofxDatGuiNodeGlobals.h"
 
 class ofxDatGui : public ofxDatGuiInteractiveObject
 {
@@ -82,6 +83,11 @@ class ofxDatGui : public ofxDatGuiInteractiveObject
         ofxDatGuiFolder* addFolder(string label, ofColor color = ofColor::white);
         ofxDatGuiFolder* addFolder(ofxDatGuiFolder* folder);
     
+        // Custom includes for DVideo/Photon
+        ofxDatGuiInputNode* addInputNode(string label);
+        ofxDatGuiOutputNode* addOutputNode(string label);
+        bool applyNodeScale = false;
+    
         ofxDatGuiHeader* getHeader();
         ofxDatGuiFooter* getFooter();
         ofxDatGuiLabel* getLabel(string label, string folder = "");
@@ -96,6 +102,8 @@ class ofxDatGui : public ofxDatGuiInteractiveObject
         ofxDatGuiValuePlotter* getValuePlotter(string label, string folder = "");
         ofxDatGuiFolder* getFolder(string label);
         ofxDatGuiDropdown* getDropdown(string label);
+        ofxDatGuiInputNode* getInputNode(string label, string folder = "");
+        ofxDatGuiOutputNode* getOutputNode(string label, string folder = "");
     
     private:
     
@@ -152,5 +160,7 @@ class ofxDatGui : public ofxDatGuiInteractiveObject
         void on2dPadEventCallback(ofxDatGui2dPadEvent e);
         void onColorPickerEventCallback(ofxDatGuiColorPickerEvent e);
         void onMatrixEventCallback(ofxDatGuiMatrixEvent e);
-
+        // Custom photon/dvideo events
+        void onInputNodeEventCallback(ofxDatGuiInputNodeEvent e);
+        void onOutputNodeEventCallback(ofxDatGuiOutputNodeEvent e);
 };

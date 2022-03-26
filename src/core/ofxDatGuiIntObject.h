@@ -30,6 +30,8 @@ namespace ofxDatGuiMsg
     const string EVENT_HANDLER_NULL = "[WARNING] :: Event Handler Not Set";
     const string COMPONENT_NOT_FOUND = "[ERROR] :: Component Not Found";
     const string MATRIX_EMPTY = "[WARNING] :: Matrix is Empty";
+    const string INPUT_NODE_NOT_CONNECTED = "[WARNING] :: Input Node event not connected";
+    const string OUTPUT_NODE_NOT_CONNECTED = "[WARNING] :: Output Node event not connected";
 }
 
 class ofxDatGuiLog {
@@ -206,5 +208,38 @@ class ofxDatGuiInteractiveObject{
         void onInternalEvent(onInternalEventCallback callback) {
             internalEventCallback = callback;
         }
+    
+    
+        // DVideo/Photon custom events
+        // Input Node event
+        typedef std::function<void(ofxDatGuiInputNodeEvent)> onInputNodeEventCallback;
+        onInputNodeEventCallback inputNodeEventCallback;
+        
+        template<typename T, typename args, class ListenerClass>
+        void onInputNodeEvent(T* owner, void (ListenerClass::*listenerMethod)(args))
+        {
+            inputNodeEventCallback = std::bind(listenerMethod, owner, std::placeholders::_1);
+        }
+        
+        void onInputNodeEvent(onInputNodeEventCallback callback)
+        {
+            inputNodeEventCallback = callback;
+        }
+        
+        // Output node event
+        typedef std::function<void(ofxDatGuiOutputNodeEvent)> onOutputNodeEventCallback;
+        onOutputNodeEventCallback outputNodeEventCallback;
+        
+        template<typename T, typename args, class ListenerClass>
+        void onOutputNodeEvent(T* owner, void (ListenerClass::*listenerMethod)(args))
+        {
+            outputNodeEventCallback = std::bind(listenerMethod, owner, std::placeholders::_1);
+        }
+        
+        void onOutputNodeEvent(onOutputNodeEventCallback callback)
+        {
+            outputNodeEventCallback = callback;
+        }
+     
 };
 

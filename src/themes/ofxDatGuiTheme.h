@@ -198,7 +198,7 @@ class ofxDatGuiTheme{
             } pad2d;
         
             struct {
-                int height = 70;
+                int height = 50;
                 int pointSize = 2;
                 int lineWeight = 2;
             } graph;

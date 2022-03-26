@@ -214,7 +214,17 @@ class ofxDatGuiSlider : public ofxDatGuiComponent {
         {
             if (!mEnabled || !mVisible){
                 return false;
-            }   else if (m.x>=x+mLabel.width && m.x<= x+mLabel.width+mSliderWidth && m.y>=y+mStyle.padding && m.y<= y+mStyle.height-mStyle.padding){
+            }
+            else if (applyNodeScale) {
+                // Resample position based on the node scale
+                ofVec2f dimension = ofVec2f(mStyle.width, mStyle.height) * ofxDatGuiNodeGlobals::getNodeScale();
+                ofVec2f position = ofVec2f(x, y) * ofxDatGuiNodeGlobals::getNodeScale();
+                if (m.x > position.x && m.x < (position.x + dimension.x) && m.y > position.y && m.y < (position.y + dimension.y)) {
+                    ofxDatGuiNodeGlobals::singleNodeDragged(true);
+                    return true;
+                }
+            }
+            else if (m.x>=x+mLabel.width && m.x<= x+mLabel.width+mSliderWidth && m.y>=y+mStyle.padding && m.y<= y+mStyle.height-mStyle.padding){
                 return true;
             }   else if (mInput->hitTest(m)){
                 return true;

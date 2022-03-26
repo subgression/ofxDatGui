@@ -22,6 +22,9 @@
 
 #pragma once
 
+//#include "ofxDatGuiInputNode.h"
+//#include "ofxDatGuiOutputNode.h"
+
 class ofxDatGuiButton;
 class ofxDatGuiToggle;
 class ofxDatGuiSlider;
@@ -32,6 +35,8 @@ class ofxDatGuiColorPicker;
 class ofxDatGuiMatrix;
 class ofxDatGuiScrollView;
 class ofxDatGuiScrollViewItem;
+class ofxDatGuiInputNode;
+class ofxDatGuiOutputNode;
 
 enum ofxDatGuiEventType
 {
@@ -172,5 +177,23 @@ class ofxDatGuiMatrixEvent{
     ofxDatGuiMatrix* target;
 };
 
+// Custom DVideo/Photon code
+class ofxDatGuiOutputNodeEvent {
 
+    public:
+        ofxDatGuiOutputNodeEvent(ofxDatGuiOutputNode* t)
+        {
+            target = t;
+        }
+    ofxDatGuiOutputNode* target;
+};
 
+class ofxDatGuiInputNodeEvent{
+
+    public:
+        ofxDatGuiInputNodeEvent(ofxDatGuiInputNode* t)
+        {
+            target = t;
+        }
+    ofxDatGuiInputNode* target;
+};

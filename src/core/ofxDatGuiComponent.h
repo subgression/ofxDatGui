@@ -22,6 +22,7 @@
 
 #pragma once
 #include "ofxDatGuiIntObject.h"
+#include "ofxDatGuiNodeGlobals.h"
 
 class ofxDatGuiComponent : public ofxDatGuiInteractiveObject
 {
@@ -99,6 +100,9 @@ class ofxDatGuiComponent : public ofxDatGuiInteractiveObject
         void onWindowResized(ofResizeEventArgs &e);
 
         static const ofxDatGuiTheme* getTheme();
+    
+        // Defines if this node should scale with the nodeScale or not
+        bool applyNodeScale = false;
     
     protected:
     

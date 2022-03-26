@@ -439,8 +439,23 @@ void ofxDatGuiComponent::drawColorPicker() { }
 
 bool ofxDatGuiComponent::hitTest(ofPoint m)
 {
-    if (mMask.height > 0 && (m.y < 0 || m.y > mMask.height)) return false;
-    return (m.x>=x && m.x<= x+mStyle.width && m.y>=y && m.y<= y+mStyle.height);
+    if (applyNodeScale) {
+        // Prevent hit test when the node manager is currently dragging nodes
+        if (ofxDatGuiNodeGlobals::nodeManagerDraggingNodes()) return false;
+        // Resample position based on the node scale
+        ofVec2f dimension = ofVec2f(mStyle.width, mStyle.height) * ofxDatGuiNodeGlobals::getNodeScale();
+        ofVec2f position = ofVec2f(x, y) * ofxDatGuiNodeGlobals::getNodeScale();
+        if (m.x > position.x && m.x < (position.x + dimension.x) && m.y > position.y && m.y < (position.y + dimension.y)) {
+            ofxDatGuiNodeGlobals::singleNodeDragged(true);
+            return true;
+        }
+        //ofxDatGuiNodeGlobals::singleNodeDragged(false);
+        return false;
+    }
+    else {
+        if (mMask.height > 0 && (m.y < 0 || m.y > mMask.height)) return false;
+        return (m.x>=x && m.x<= x+mStyle.width && m.y>=y && m.y<= y+mStyle.height);
+    }
 }
 
 void ofxDatGuiComponent::onMouseEnter(ofPoint m)
