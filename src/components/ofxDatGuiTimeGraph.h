@@ -89,8 +89,8 @@ class ofxDatGuiTimeGraph : public ofxDatGuiComponent {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             glBegin(GL_TRIANGLE_STRIP);
             for (int i=0; i<pts.size(); i++) {
-                glVertex2f(px+ pts[i].x, py + mPlotterRect.height);
-                glVertex2f(px+ pts[i].x, py + pts[i].y);
+                glVertex3f(px+ pts[i].x, py + mPlotterRect.height, 1.0);
+                glVertex3f(px+ pts[i].x, py + pts[i].y, 1.0);
             }
             glEnd();
         }
@@ -101,9 +101,9 @@ class ofxDatGuiTimeGraph : public ofxDatGuiComponent {
             float py = this->y + mPlotterRect.y;
             glLineWidth(mLineWeight);
             glBegin(GL_LINE_LOOP);
-            glVertex2f(px+mPlotterRect.width, py+mPlotterRect.height);
+            glVertex3f(px+mPlotterRect.width, py+mPlotterRect.height, 1.0);
             for (int i=0; i<pts.size(); i++) glVertex2f(px+pts[i].x, py+pts[i].y);
-            glVertex2f(px, py+mPlotterRect.height);
+            glVertex3f(px, py+mPlotterRect.height, 1.0);
             glEnd();
         }
     
@@ -113,7 +113,7 @@ class ofxDatGuiTimeGraph : public ofxDatGuiComponent {
             float py = this->y + mPlotterRect.y;
             glLineWidth(mLineWeight);
             glBegin(GL_LINE_STRIP);
-            for (int i=0; i<pts.size(); i++) glVertex2f(px+pts[i].x, py+pts[i].y);
+            for (int i=0; i<pts.size(); i++) glVertex3f(px+pts[i].x, py+pts[i].y, 1.0);
             glEnd();
         }
     
@@ -124,7 +124,7 @@ class ofxDatGuiTimeGraph : public ofxDatGuiComponent {
             glPointSize(mLineWeight);
             glLineWidth(mLineWeight);
             glBegin(GL_POINTS);
-            for (int i=0; i<pts.size(); i++) glVertex2f(px+pts[i].x, py+pts[i].y);
+            for (int i=0; i<pts.size(); i++) glVertex3f(px+pts[i].x, py+pts[i].y, 1.0);
             glEnd();
         }
     
